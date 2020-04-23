@@ -18,82 +18,59 @@ public class ArrayStorage {
     }
 
     void save(Resume r) {
-
-        Resume currentResume;
         boolean resumeIsNew = true;
 
         //Проверяем, если резюме с таким uuid уже имеется в хранилище, то обновляем его
         for (int i = 0; i < lastIndex; i++) {
-            currentResume= storage[i];
-            if (currentResume.uuid.equals(r.uuid)){
+            if (storage[i].uuid.equals(r.uuid)) {
                 storage[i] = r;
                 resumeIsNew = false;
                 System.out.println("resume already exist");
                 break;
             }
         }
-
         //Если резюме не было найдено, добавляем в хранилище
-        if(resumeIsNew){
+        if (resumeIsNew) {
             storage[lastIndex] = r;
             lastIndex++;
         }
-
     }
 
     Resume get(String uuid) {
-
         Resume resume = null;
-        Resume currentResume;
 
         for (int i = 0; i < lastIndex; i++) {
-            currentResume= storage[i];
-            if (currentResume.uuid.equals(uuid)){
-                resume = currentResume;
+            if (storage[i].uuid.equals(uuid)) {
+                resume = storage[i];
                 break;
             }
         }
-
         return resume;
     }
 
     void delete(String uuid) {
-
-
-        Resume[] tempStorage = new Resume[10000];
-        Resume currentResume;
-        boolean deletedResumeIsFounded = false;
-        int addedIndex = 0;
-
         for (int i = 0; i < lastIndex; i++) {
-            currentResume= storage[i];
-            if (currentResume.uuid.equals(uuid)){
-                deletedResumeIsFounded = true;
-                continue;
+            if (storage[i].uuid.equals(uuid)) {
+                //Заменяем удаляемый элемент последним элементом, чтобы избежать "дырки" в середине
+                storage[i] = storage[lastIndex - 1];
+                storage[lastIndex - 1] = null;
+                //Уменьшаем количество заполненных элементов (size) массива
+                lastIndex--;
+                break;
             }
-            tempStorage[addedIndex] = currentResume;
-            addedIndex ++;
         }
-
-        if (deletedResumeIsFounded){
-            this.storage = tempStorage;
-            lastIndex--;
-        }
-
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-
-        Resume[] currentStorage = new Resume[lastIndex];
+        Resume[] resumes = new Resume[lastIndex];
 
         for (int i = 0; i < lastIndex; i++) {
-            currentStorage[i] = storage[i];
+            resumes[i] = storage[i];
         }
-
-        return currentStorage;
+        return resumes;
     }
 
     int size() {
