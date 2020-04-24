@@ -37,7 +37,7 @@ public class ArrayStorage {
     }
 
     public void save(Resume r) {
-        if (size() == storage.length){
+        if (size() == storage.length) {
             System.out.println("ERROR: Storage is full");
             return;
         }
@@ -74,7 +74,7 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.copyOf(storage,size());
+        return Arrays.copyOf(storage, size());
     }
 
     //Если резюме есть в хранилище возвращаем его индекс
