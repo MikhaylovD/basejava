@@ -12,39 +12,29 @@ public class ArrayStorage {
     private Resume[] storage = new Resume[3];
     private int lastIndex = 0;
 
-    public int getLastIndex() {
-        return lastIndex;
-    }
-
-    public void setLastIndex(int lastIndex) {
-        this.lastIndex = lastIndex;
-    }
-
-    public void update(Resume r) {
-        int indexResume = checkResume(r.getUuid());
+    public void update(Resume resume) {
+        int indexResume = checkResume(resume.getUuid());
         if (indexResume == -1) {
-            System.out.println("ERROR: Resume in not found");
+            System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " is not found");
         } else {
-            storage[indexResume] = r;
+            storage[indexResume] = resume;
         }
     }
 
     public void clear() {
-        for (int i = 0; i < lastIndex; i++) {
-            storage[i] = null;
-        }
+        Arrays.fill(storage, null);
         lastIndex = 0;
     }
 
-    public void save(Resume r) {
-        if (size() == storage.length) {
+    public void save(Resume resume) {
+        if (lastIndex == storage.length) {
             System.out.println("ERROR: Storage is full");
             return;
         }
-        if (checkResume(r.getUuid()) != -1) {
-            System.out.println("ERROR: Resume already exist");
+        if (checkResume(resume.getUuid()) != -1) {
+            System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " already exist");
         } else {
-            storage[lastIndex] = r;
+            storage[lastIndex] = resume;
             lastIndex++;
         }
     }
@@ -52,17 +42,16 @@ public class ArrayStorage {
     public Resume get(String uuid) {
         int indexResume = checkResume(uuid);
         if (indexResume == -1) {
-            System.out.println("ERROR: Resume in not found");
+            System.out.println("ERROR: Resume uuid: " + uuid + " is not found");
             return null;
-        } else {
-            return storage[indexResume];
         }
+        return storage[indexResume];
     }
 
     public void delete(String uuid) {
         int indexResume = checkResume(uuid);
         if (indexResume == -1) {
-            System.out.println("ERROR: Resume in not exist");
+            System.out.println("ERROR: Resume uuid: " + uuid + " is not exist");
         } else {
             storage[indexResume] = storage[lastIndex - 1];
             storage[lastIndex - 1] = null;
@@ -78,7 +67,7 @@ public class ArrayStorage {
     }
 
     //Если резюме есть в хранилище возвращаем его индекс
-    public int checkResume(String uuid) {
+    private int checkResume(String uuid) {
         for (int i = 0; i < lastIndex; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
