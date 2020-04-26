@@ -1,5 +1,8 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
+import com.urise.webapp.exception.NonExistStorageException;
+import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -16,11 +19,10 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void save(Resume resume) {
         if (lastIndex == STORAGE_LIMIT) {
-            System.out.println("ERROR: Storage is full");
-            return;
+            throw new StorageException("Storage overflow", resume.getUuid());
         }
         if (getIndex(resume.getUuid())  >= 0) {
-            System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " already exist");
+            throw new ExistStorageException(resume.getUuid());
         } else {
             saveResume(resume);
             lastIndex++;
@@ -29,8 +31,8 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public void update(Resume resume) {
         int indexResume = getIndex(resume.getUuid());
-        if (indexResume == -1) {
-            System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " is not found");
+        if (indexResume < 0) {
+            throw new NonExistStorageException(resume.getUuid());
         } else {
             storage[indexResume] = resume;
         }
@@ -39,7 +41,7 @@ public abstract class AbstractArrayStorage implements Storage {
     public void delete(String uuid) {
         int indexResume = getIndex(uuid);
         if (indexResume < 0) {
-            System.out.println("ERROR: Resume uuid: " + uuid + " is not exist");
+            throw new NonExistStorageException(uuid);
         } else {
             deleteResume(indexResume);
             storage[lastIndex - 1] = null;
@@ -62,9 +64,8 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public Resume get(String uuid) {
         int indexResume = getIndex(uuid);
-        if (indexResume == -1) {
-            System.out.println("ERROR: Resume uuid: " + uuid + " is not found");
-            return null;
+        if (indexResume < 0) {
+            throw new NonExistStorageException(uuid);
         }
         return storage[indexResume];
     }
