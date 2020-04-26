@@ -7,13 +7,10 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
-
-    private Resume[] storage = new Resume[3];
-    private int lastIndex = 0;
+public class ArrayStorage extends AbstractArrayStorage {
 
     public void update(Resume resume) {
-        int indexResume = checkResume(resume.getUuid());
+        int indexResume = getIndex(resume.getUuid());
         if (indexResume == -1) {
             System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " is not found");
         } else {
@@ -22,16 +19,16 @@ public class ArrayStorage {
     }
 
     public void clear() {
-        Arrays.fill(storage, null);
+        Arrays.fill(storage, 0, lastIndex, null);
         lastIndex = 0;
     }
 
     public void save(Resume resume) {
-        if (lastIndex == storage.length) {
+        if (lastIndex == STORAGE_LIMIT) {
             System.out.println("ERROR: Storage is full");
             return;
         }
-        if (checkResume(resume.getUuid()) != -1) {
+        if (getIndex(resume.getUuid()) != -1) {
             System.out.println("ERROR: Resume uuid: " + resume.getUuid() + " already exist");
         } else {
             storage[lastIndex] = resume;
@@ -39,17 +36,8 @@ public class ArrayStorage {
         }
     }
 
-    public Resume get(String uuid) {
-        int indexResume = checkResume(uuid);
-        if (indexResume == -1) {
-            System.out.println("ERROR: Resume uuid: " + uuid + " is not found");
-            return null;
-        }
-        return storage[indexResume];
-    }
-
     public void delete(String uuid) {
-        int indexResume = checkResume(uuid);
+        int indexResume = getIndex(uuid);
         if (indexResume == -1) {
             System.out.println("ERROR: Resume uuid: " + uuid + " is not exist");
         } else {
@@ -63,20 +51,16 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     public Resume[] getAll() {
-        return Arrays.copyOf(storage, size());
+        return Arrays.copyOf(storage, lastIndex);
     }
 
     //Если резюме есть в хранилище возвращаем его индекс
-    private int checkResume(String uuid) {
+    protected int getIndex(String uuid) {
         for (int i = 0; i < lastIndex; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
         return -1;
-    }
-
-    public int size() {
-        return lastIndex;
     }
 }
