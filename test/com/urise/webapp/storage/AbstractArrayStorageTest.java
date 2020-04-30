@@ -65,7 +65,7 @@ abstract class AbstractArrayStorageTest {
     @Test
     void getAll() {
         Resume[] testResumes = storage.getAll();
-        Resume[] mainResumes = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
+        Resume[] mainResumes = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_4)};
         assertArrayEquals(mainResumes, testResumes);
 //        assertEquals(new Resume(UUID_1), testResume[0]);
 //        assertEquals(new Resume(UUID_2), testResume[1]);
@@ -94,6 +94,6 @@ abstract class AbstractArrayStorageTest {
         assertThrows(StorageException.class,
                 ()->{for (int i = 0; i < 1001; i++) {
                     storage.save(new Resume());
-                };} );
+                }} );
     }
 }
