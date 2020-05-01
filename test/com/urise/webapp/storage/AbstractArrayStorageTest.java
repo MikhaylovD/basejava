@@ -64,7 +64,7 @@ abstract class AbstractArrayStorageTest {
     @Test
     void getAll() {
         Resume[] actualResumes = storage.getAll();
-        Resume[] expectedResumes = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_4)};
+        Resume[] expectedResumes = {new Resume(UUID_1), new Resume(UUID_2), new Resume(UUID_3)};
         assertArrayEquals(expectedResumes, actualResumes);
     }
 
@@ -86,8 +86,13 @@ abstract class AbstractArrayStorageTest {
 
     @Test
     void getOverflowException() {
-        assertThrows(StorageException.class, ()->{for (int i = 0; i < 1001; i++) {
+        try{
+            for (int i = 4; i < 1001; i++) {
                     storage.save(new Resume());
-                }} );
+                }}
+        catch (StorageException e){
+            fail();
+        }
+        assertThrows(StorageException.class, ()->{storage.save(new Resume());});
     }
 }
