@@ -9,15 +9,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage{
-
-    List<Resume> list = new ArrayList<>();
+public class ListStorage extends AbstractStorage {
+    private List<Resume> list = new ArrayList<>();
 
     @Override
-    public void save(Resume resume) {
-        if (getIndex(resume.getUuid())  >= 0) {
-            throw new ExistStorageException(resume.getUuid());
-        }
+    public void doSave(Resume resume) {
         list.add(resume);
     }
 
@@ -43,13 +39,13 @@ public class ListStorage extends AbstractStorage{
 
     @Override
     protected Resume getResume(int indexResume) {
-        return  list.get(indexResume);
+        return list.get(indexResume);
     }
 
     @Override
     protected int getIndex(String uuid) {
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i).getUuid().equals(uuid)){
+            if (list.get(i).getUuid().equals(uuid)) {
                 return i;
             }
         }

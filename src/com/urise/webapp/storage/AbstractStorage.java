@@ -1,14 +1,20 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.ExistStorageException;
 import com.urise.webapp.exception.NonExistStorageException;
 import com.urise.webapp.model.Resume;
 
-public abstract class AbstractStorage implements Storage{
+public abstract class AbstractStorage implements Storage {
     @Override
-    public abstract void save(Resume r);
+    public void save(Resume resume){
+        if (getIndex(resume.getUuid()) >= 0) {
+            throw new ExistStorageException(resume.getUuid());
+        }
+        doSave(resume);
+    }
 
     @Override
-    public void update(Resume resume){
+    public void update(Resume resume) {
         int indexResume = getIndex(resume.getUuid());
         if (indexResume < 0) {
             throw new NonExistStorageException(resume.getUuid());
@@ -18,7 +24,7 @@ public abstract class AbstractStorage implements Storage{
     }
 
     @Override
-    public Resume get(String uuid){
+    public Resume get(String uuid) {
         int indexResume = getIndex(uuid);
         if (indexResume < 0) {
             throw new NonExistStorageException(uuid);
@@ -27,7 +33,7 @@ public abstract class AbstractStorage implements Storage{
     }
 
     @Override
-    public void delete(String uuid){
+    public void delete(String uuid) {
         int indexResume = getIndex(uuid);
         if (indexResume < 0) {
             throw new NonExistStorageException(uuid);
@@ -35,15 +41,6 @@ public abstract class AbstractStorage implements Storage{
             doDeleteResume(indexResume);
         }
     }
-
-    @Override
-    public abstract int size();
-
-    @Override
-    public abstract Resume[] getAll();
-
-    @Override
-    public abstract void clear();
 
     protected abstract void updateResume(Resume resume, int indexResume);
 
@@ -54,4 +51,6 @@ public abstract class AbstractStorage implements Storage{
     protected abstract void saveResume(Resume resume);
 
     protected abstract void doDeleteResume(int indexResume);
+
+    protected abstract void doSave(Resume resume);
 }
