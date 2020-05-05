@@ -1,7 +1,5 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NonExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
@@ -18,13 +16,29 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected int lastIndex = 0;
 
     @Override
-    public int size() {
-        return lastIndex;
+    public void doSave(Resume resume, Object indexResume) {
+        if (lastIndex == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", resume.getUuid());
+        }
+        saveResume(resume);
+        lastIndex++;
     }
 
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, lastIndex);
+    public void doUpdate(Resume resume, Object indexResume) {
+        storage[(Integer)indexResume] = resume;
+    }
+
+    @Override
+    protected Resume doGet(Object indexResume) {
+        return storage[(Integer) indexResume];
+    }
+
+    @Override
+    protected void doDelete(Object indexResume) {
+        deleteResume((Integer)indexResume);
+        storage[lastIndex - 1] = null;
+        lastIndex--;
     }
 
     @Override
@@ -34,34 +48,24 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public void updateResume(Resume resume, int indexResume) {
-        storage[indexResume] = resume;
+    public Resume[] getAll() {
+        return Arrays.copyOf(storage, lastIndex);
     }
 
     @Override
-    protected Resume getResume(int indexResume) {
-        return storage[indexResume];
+    public int size() {
+        return lastIndex;
     }
 
-    protected abstract int getIndex(String uuid);
+    @Override
+    protected boolean isExist(Object index) {
+        return (Integer)index >= 0;
+    }
+
+    protected abstract Object getSearchKey(String uuid);
 
     protected abstract void saveResume(Resume resume);
 
-    protected abstract void deleteResume(int indexResume);
+    protected abstract void deleteResume(Integer indexResume);
 
-    @Override
-    public void doDeleteResume(int indexResume) {
-        deleteResume(indexResume);
-        storage[lastIndex - 1] = null;
-        lastIndex--;
-    }
-
-    @Override
-    public void doSave(Resume resume) {
-        if (lastIndex == STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", resume.getUuid());
-        }
-        saveResume(resume);
-        lastIndex++;
-    }
 }

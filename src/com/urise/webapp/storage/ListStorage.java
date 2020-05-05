@@ -1,30 +1,31 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NonExistStorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class ListStorage extends AbstractStorage {
     private List<Resume> list = new ArrayList<>();
 
     @Override
-    public void doSave(Resume resume) {
+    public void doSave(Resume resume, Object indexResume) {
         list.add(resume);
     }
 
     @Override
-    public int size() {
-        return list.size();
+    protected void doUpdate(Resume resume, Object indexResume) {
+        list.add((Integer)indexResume, resume);
     }
 
     @Override
-    public Resume[] getAll() {
-        return list.toArray(new Resume[list.size()]);
+    protected Resume doGet(Object indexResume) {
+        return list.get((Integer)indexResume);
+    }
+
+    @Override
+    protected void doDelete(Object indexResume) {
+        list.remove(indexResume);
     }
 
     @Override
@@ -33,17 +34,17 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateResume(Resume resume, int indexResume) {
-        list.add(indexResume, resume);
+    public Resume[] getAll() {
+        return list.toArray(new Resume[list.size()]);
     }
 
     @Override
-    protected Resume getResume(int indexResume) {
-        return list.get(indexResume);
+    public int size() {
+        return list.size();
     }
 
     @Override
-    protected int getIndex(String uuid) {
+    protected Object getSearchKey(String uuid) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -53,12 +54,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void saveResume(Resume resume) {
-        list.add(resume);
-    }
-
-    @Override
-    protected void doDeleteResume(int indexResume) {
-        list.remove(indexResume);
+    protected boolean isExist(Object searchKey) {
+        return (Integer)searchKey >= 0;
     }
 }

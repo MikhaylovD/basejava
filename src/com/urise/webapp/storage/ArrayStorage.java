@@ -13,7 +13,7 @@ public class ArrayStorage extends AbstractArrayStorage {
      */
     //Если резюме есть в хранилище возвращаем его индекс
 
-    protected int getIndex(String uuid) {
+    protected Object getSearchKey(String uuid) {
         for (int i = 0; i < lastIndex; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
@@ -28,7 +28,7 @@ public class ArrayStorage extends AbstractArrayStorage {
     }
 
     @Override
-    protected void deleteResume(int indexResume) {
+    protected void deleteResume(Integer indexResume) {
         storage[indexResume] = storage[lastIndex - 1];
     }
 }

@@ -1,15 +1,10 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.NonExistStorageException;
+import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +22,7 @@ abstract class AbstractArrayStorageTest {
     }
 
     @BeforeEach
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         storage.clear();
         storage.save(new Resume(UUID_1));
         storage.save(new Resume(UUID_2));
@@ -53,7 +48,7 @@ abstract class AbstractArrayStorageTest {
     void delete() {
         storage.delete(UUID_3);
         assertEquals(2, storage.size());
-        assertThrows(NonExistStorageException.class, ()->{storage.get(UUID_3);} );
+        assertThrows(NotExistStorageException.class, () -> storage.get(UUID_3));
     }
 
     @Test
@@ -81,18 +76,18 @@ abstract class AbstractArrayStorageTest {
 
     @Test
     void getNotExist() {
-        assertThrows(NonExistStorageException.class, ()->{storage.get("dummy");} );
+        assertThrows(NotExistStorageException.class, () -> storage.get("dummy"));
     }
 
     @Test
     void getOverflowException() {
-        try{
+        try {
             for (int i = 4; i < 1001; i++) {
-                    storage.save(new Resume());
-                }}
-        catch (StorageException e){
+                storage.save(new Resume());
+            }
+        } catch (StorageException e) {
             fail();
         }
-        assertThrows(StorageException.class, ()->{storage.save(new Resume());});
+        assertThrows(StorageException.class, () -> storage.save(new Resume()));
     }
 }
