@@ -4,6 +4,7 @@ import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -20,7 +21,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         if (lastIndex == STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
         }
-        saveResume(resume, indexResume);
+        saveResume(resume, (Integer)indexResume);
         lastIndex++;
     }
 
@@ -48,8 +49,9 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, lastIndex);
+    public List<Resume> getAllList() {
+        List<Resume> resumes = Arrays.asList(storage);
+        return resumes;
     }
 
     @Override
@@ -62,10 +64,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return (Integer) index >= 0;
     }
 
-    protected abstract Object getSearchKey(String uuid);
-
-    protected abstract void saveResume(Resume resume, Object indexResume);
+    protected abstract void saveResume(Resume resume, int indexResume);
 
     protected abstract void deleteResume(Integer indexResume);
-
 }

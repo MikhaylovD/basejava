@@ -1,8 +1,12 @@
 package com.urise.webapp.storage;
 
-class SortedArrayStorageTest extends AbstractArrayStorageTest {
+import org.junit.jupiter.api.extension.Extension;
+
+public class SortedArrayStorageTest extends AbstractArrayStorageTest implements Extension {
 
     public SortedArrayStorageTest() {
         super(new SortedArrayStorage());
     }
+
+
 }
