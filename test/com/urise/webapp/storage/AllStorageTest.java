@@ -7,7 +7,8 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitPlatform.class)
 @SelectClasses({
         ListStorageTest.class,
-        MapStorageTest.class,
+        MapUuidStorageTest.class,
+        MapResumeStorageTest.class,
         ArrayStorageTest.class,
         SortedArrayStorageTest.class,
 })

@@ -10,7 +10,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AbstractStorageTest {
+public abstract class AbstractStorageTest {
     protected Storage storage;
     protected static final String UUID_1 = "uuid1";
     protected static final String UUID_2 = "uuid2";
@@ -61,7 +61,7 @@ public class AbstractStorageTest {
     }
 
     @Test
-    void getAll() {
+    void getAllSorted() {
         List<Resume> actualResumes = storage.getAllSorted();
         List<Resume> expectedResumes = new ArrayList<>();
         expectedResumes.add(new Resume(UUID_1, NAME_1));
