@@ -14,7 +14,7 @@ public class ArrayStorage extends AbstractArrayStorage {
      */
     //Если резюме есть в хранилище возвращаем его индекс
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for (int i = 0; i < lastIndex; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
