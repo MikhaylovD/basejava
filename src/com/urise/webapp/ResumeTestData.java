@@ -10,9 +10,9 @@ public class ResumeTestData {
         resume.setContactDetails("PHONE", "99999999");
         resume.setContactDetails("EMAIL", "11111@mail.ru");
 
-        resume.setMainInformation("EDUCATION","University","01/01/2000","31/12/2000","learn java");
-        resume.setMainInformation("ACHIEVEMENT","baseJava","01/01/2001","31/12/2001","write programmes");
-        resume.setMainInformation("EXPERIENCE","baseJava","01/01/2002","31/12/2003","create web app");
+        resume.setMainInformation("EDUCATION", "University", 1, 2000, 12, 2000, "learn java");
+        resume.setMainInformation("ACHIEVEMENT", "baseJava", 1, 2001, 12, 2001, "write programmes");
+        resume.setMainInformation("EXPERIENCE", "baseJava", 1, 2002, 12, 2002, "create web app");
 
         resume.getResumeInfo();
     }

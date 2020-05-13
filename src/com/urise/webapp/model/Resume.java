@@ -1,8 +1,8 @@
 package com.urise.webapp.model;
 
-import javax.swing.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.YearMonth;
 import java.util.*;
 
 /**
@@ -37,7 +37,7 @@ public class Resume implements Comparable<Resume> {
     }
 
     public void getResumeInfo() {
-        System.out.println(fullName + "\n" );
+        System.out.println(fullName + "\n");
         contactDetails.getInfo();
         mainInformation.getInfo();
     }
@@ -46,8 +46,8 @@ public class Resume implements Comparable<Resume> {
         contactDetails.setInfo(infoType, information);
     }
 
-    public void setMainInformation(String infoType, String name,String startDate, String endDate, String description) {
-        mainInformation.setInfo(infoType, name, startDate, endDate, description);
+    public void setMainInformation(String infoType, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
+        mainInformation.setInfo(infoType, name, startDateMonth, startDateYear, endDateMonth, endDateYear, description);
     }
 
     @Override
@@ -77,14 +77,15 @@ public class Resume implements Comparable<Resume> {
     }
 
     private class ContactDetails {
-        Map<ContactType, String> map= new HashMap<>();
+        Map<ContactType, String> map = new HashMap<>();
+
         public void setInfo(String infoType, String information) {
-            ContactType contactType= ContactType.valueOf(infoType);
+            ContactType contactType = ContactType.valueOf(infoType);
             map.put(contactType, information);
         }
 
         public void getInfo() {
-            for(Map.Entry<ContactType, String> pair: map.entrySet()){
+            for (Map.Entry<ContactType, String> pair : map.entrySet()) {
                 System.out.println(pair.getKey().getTitle() + ": " + pair.getValue());
             }
             System.out.println();
@@ -94,39 +95,33 @@ public class Resume implements Comparable<Resume> {
     private class MainInformation {
         Map<SectionType, SectionInfo> map = new HashMap<>();
 
-        public void setInfo(String sectionTypeInfo, String name,String startDate, String endDate, String description) {
+        public void setInfo(String sectionTypeInfo, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
             SectionType sectionType = SectionType.valueOf(sectionTypeInfo);
             SectionInfo sectionInfo = map.get(sectionType);
-            if (sectionInfo == null){
+            if (sectionInfo == null) {
                 sectionInfo = new SectionInfo();
             }
-            sectionInfo.setValue(name,startDate, endDate, description);
+            sectionInfo.setValue(name, startDateMonth, startDateYear, endDateMonth, endDateYear, description);
             map.put(sectionType, sectionInfo);
         }
 
         public void getInfo() {
-            for(Map.Entry<SectionType, SectionInfo> pair: map.entrySet()){
+            for (Map.Entry<SectionType, SectionInfo> pair : map.entrySet()) {
                 System.out.println(pair.getKey().getTitle() + ":");
-                for(CommonDescription info: pair.getValue().getList()){
+                for (CommonDescription info : pair.getValue().getList()) {
                     System.out.println(info);
                 }
             }
         }
     }
 
-    private class SectionInfo{
+    private class SectionInfo {
         private List<CommonDescription> list = new ArrayList<>();
 
-        public void setValue(String name,String startDateString, String endDateString, String description) {
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-            Date startDate = null;
-            Date endDate = null;
-            try {
-                startDate = format.parse(startDateString);
-                endDate = format.parse(endDateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        public void setValue(String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
+
+            YearMonth startDate = YearMonth.of(startDateYear, startDateMonth);
+            YearMonth endDate = YearMonth.of(endDateYear, endDateMonth);
 
             CommonDescription commonDescription = new CommonDescription(name, startDate, endDate, description);
             list.add(commonDescription);

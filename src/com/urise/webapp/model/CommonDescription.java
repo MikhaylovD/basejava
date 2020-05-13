@@ -1,15 +1,15 @@
 package com.urise.webapp.model;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 
 public class CommonDescription {
     private String name;
-    private Date startDate;
-    private Date endDate;
+    private YearMonth startDate;
+    private YearMonth endDate;
     private String description;
 
-    public CommonDescription(String name, Date startDate, Date endDate, String description) {
+    public CommonDescription(String name, YearMonth startDate, YearMonth endDate, String description) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -18,8 +18,8 @@ public class CommonDescription {
 
     @Override
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MMMM");
-        return  name + "\n" +
-                dateFormat.format(startDate) + "-" + dateFormat.format(endDate) + " " + description + "\n";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
+        return name + "\n" +
+                formatter.format(startDate) + " - " + formatter.format(endDate) + " " + description + "\n";
     }
 }
