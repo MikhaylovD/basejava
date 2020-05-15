@@ -1,7 +1,5 @@
 package com.urise.webapp.model;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.YearMonth;
 import java.util.*;
 
@@ -12,8 +10,8 @@ public class Resume implements Comparable<Resume> {
     // Unique identifier
     private final String uuid;
     private String fullName;
-    private ContactDetails contactDetails;
-    private MainInformation mainInformation;
+    private Map<ContactType, String>  contactDetails;
+    private Map<SectionType, Section> mainInformation;
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -24,8 +22,8 @@ public class Resume implements Comparable<Resume> {
         Objects.requireNonNull(fullName, "fullName must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
-        this.contactDetails = new ContactDetails();
-        this.mainInformation = new MainInformation();
+        this.contactDetails = new EnumMap<>(ContactType.class);
+        this.mainInformation = new EnumMap<>(SectionType.class);
     }
 
     public String getUuid() {
@@ -36,18 +34,10 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
-    public void getResumeInfo() {
+    public void showResumeInfo() {
         System.out.println(fullName + "\n");
-        contactDetails.getInfo();
-        mainInformation.getInfo();
-    }
-
-    public void setContactDetails(String infoType, String information) {
-        contactDetails.setInfo(infoType, information);
-    }
-
-    public void setMainInformation(String infoType, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
-        mainInformation.setInfo(infoType, name, startDateMonth, startDateYear, endDateMonth, endDateYear, description);
+        showContactsInfo();
+        showSectionsInfo();
     }
 
     @Override
@@ -56,12 +46,14 @@ public class Resume implements Comparable<Resume> {
         if (o == null || getClass() != o.getClass()) return false;
         Resume resume = (Resume) o;
         return uuid.equals(resume.uuid) &&
-                fullName.equals(resume.fullName);
+                fullName.equals(resume.fullName) &&
+                Objects.equals(contactDetails, resume.contactDetails) &&
+                Objects.equals(mainInformation, resume.mainInformation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, fullName);
+        return Objects.hash(uuid, fullName, contactDetails, mainInformation);
     }
 
     @Override
@@ -76,59 +68,50 @@ public class Resume implements Comparable<Resume> {
         return i != 0 ? i : uuid.compareTo(o.uuid);
     }
 
-    private class ContactDetails {
-        Map<ContactType, String> map = new HashMap<>();
+    public void setInfo(ContactType infoType, String information) {
+        contactDetails.put(infoType, information);
+    }
 
-        public void setInfo(String infoType, String information) {
-            ContactType contactType = ContactType.valueOf(infoType);
-            map.put(contactType, information);
+    public void setInfo(SectionType infoType, String information) {
+        if (infoType == SectionType.OBJECTIVE || infoType == SectionType.PERSONAL){
+            StringSection stringSection = new StringSection();
+            stringSection.setDescription(information);
+            mainInformation.put(infoType, stringSection);
         }
-
-        public void getInfo() {
-            for (Map.Entry<ContactType, String> pair : map.entrySet()) {
-                System.out.println(pair.getKey().getTitle() + ": " + pair.getValue());
+        else{
+            ListSection listSection = (ListSection)mainInformation.get(infoType);
+            if (listSection == null){
+                listSection = new ListSection();
             }
-            System.out.println();
+            listSection.getList().add(information);
+            mainInformation.put(infoType, listSection);
         }
     }
 
-    private class MainInformation {
-        Map<SectionType, SectionInfo> map = new HashMap<>();
-
-        public void setInfo(String sectionTypeInfo, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
-            SectionType sectionType = SectionType.valueOf(sectionTypeInfo);
-            SectionInfo sectionInfo = map.get(sectionType);
-            if (sectionInfo == null) {
-                sectionInfo = new SectionInfo();
-            }
-            sectionInfo.setValue(name, startDateMonth, startDateYear, endDateMonth, endDateYear, description);
-            map.put(sectionType, sectionInfo);
+    public void setInfo(SectionType sectionType, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
+        OrganizationSection organizationSection = (OrganizationSection)mainInformation.get(sectionType);
+        if (organizationSection == null){
+            organizationSection = new OrganizationSection();
         }
 
-        public void getInfo() {
-            for (Map.Entry<SectionType, SectionInfo> pair : map.entrySet()) {
-                System.out.println(pair.getKey().getTitle() + ":");
-                for (CommonDescription info : pair.getValue().getList()) {
-                    System.out.println(info);
-                }
-            }
-        }
+        YearMonth startDate = YearMonth.of(startDateYear, startDateMonth);
+        YearMonth endDate = YearMonth.of(endDateYear, endDateMonth);
+
+        organizationSection.getList().add(new OrganizationDescription(name, startDate, endDate, description));
+        mainInformation.put(sectionType, organizationSection);
     }
 
-    private class SectionInfo {
-        private List<CommonDescription> list = new ArrayList<>();
-
-        public void setValue(String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
-
-            YearMonth startDate = YearMonth.of(startDateYear, startDateMonth);
-            YearMonth endDate = YearMonth.of(endDateYear, endDateMonth);
-
-            CommonDescription commonDescription = new CommonDescription(name, startDate, endDate, description);
-            list.add(commonDescription);
+    public void showContactsInfo() {
+        for (Map.Entry<ContactType, String> pair : contactDetails.entrySet()) {
+            System.out.println(pair.getKey().getTitle() + ": " + pair.getValue());
         }
+        System.out.println();
+    }
 
-        public List<CommonDescription> getList() {
-            return list;
+    public void showSectionsInfo() {
+        for (Map.Entry<SectionType, Section> pair : mainInformation.entrySet()) {
+            System.out.println(pair.getKey().getTitle() + ":" );
+            pair.getValue().showInfo();
         }
     }
 }
