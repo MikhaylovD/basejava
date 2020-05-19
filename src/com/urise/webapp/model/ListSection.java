@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ListSection extends Section{
+public class ListSection extends AbstractSection {
     private List<String> list = new ArrayList<>();
 
     public List<String> getList() {
@@ -16,11 +16,12 @@ public class ListSection extends Section{
     }
 
     @Override
-    public void showInfo(){
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
         for (String string: list){
-            System.out.println("* " + string);
+            stringBuilder.append("* " + string + "\n");
         }
-        System.out.println();
+        return stringBuilder.toString();
     }
 
     @Override

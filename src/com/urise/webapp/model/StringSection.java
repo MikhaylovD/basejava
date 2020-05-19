@@ -2,7 +2,7 @@ package com.urise.webapp.model;
 
 import java.util.Objects;
 
-public class StringSection extends Section{
+public class StringSection extends AbstractSection {
     private String description;
 
     public String getDescription() {
@@ -14,8 +14,8 @@ public class StringSection extends Section{
     }
 
     @Override
-    public void showInfo(){
-        System.out.println(description + "\n");
+    public String toString(){
+        return description + "\n";
     }
 
     @Override

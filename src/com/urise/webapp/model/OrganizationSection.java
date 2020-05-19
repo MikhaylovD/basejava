@@ -1,26 +1,27 @@
 package com.urise.webapp.model;
 
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class OrganizationSection extends Section {
-    List<OrganizationDescription> list = new ArrayList<>();
+public class OrganizationSection extends AbstractSection {
+    List<Position> list = new ArrayList<>();
 
-    public List<OrganizationDescription> getList() {
+    public List<Position> getList() {
         return list;
     }
 
-    public void setList(List<OrganizationDescription> list) {
+    public void setList(List<Position> list) {
         this.list = list;
     }
 
     @Override
-    void showInfo() {
-        for (OrganizationDescription organizationDescription: list){
-            System.out.println(organizationDescription);
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Position organizationDescription: list){
+            stringBuilder.append(organizationDescription + "\n");
         }
+        return stringBuilder.toString();
     }
 
     @Override
