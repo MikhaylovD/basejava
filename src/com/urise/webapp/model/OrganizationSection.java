@@ -15,6 +15,10 @@ public class OrganizationSection extends AbstractSection {
         this.list = list;
     }
 
+    public void add(Position position){
+        list.add(position);
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();

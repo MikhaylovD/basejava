@@ -15,6 +15,10 @@ public class ListSection extends AbstractSection {
         this.list = list;
     }
 
+    public void add(String discription){
+        list.add(discription);
+    }
+
     @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();

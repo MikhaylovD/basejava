@@ -34,49 +34,12 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
-    public void showResumeInfo() {
-        System.out.println(fullName + "\n");
-        for (Map.Entry<ContactType, String> pair : contactDetails.entrySet()) {
-            System.out.println(pair.getKey().getTitle() + ": " + pair.getValue());
-        }
-        System.out.println();
-        for (Map.Entry<SectionType, AbstractSection> pair : sections.entrySet()) {
-            System.out.println(pair.getKey().getTitle() + ":" );
-            System.out.println(pair.getValue());
-        }
-    }
-
     public void setContact(ContactType infoType, String information) {
         contactDetails.put(infoType, information);
     }
 
-    public void setSection(SectionType infoType, String information) {
-        if (infoType == SectionType.OBJECTIVE || infoType == SectionType.PERSONAL){
-            StringSection stringSection = new StringSection();
-            stringSection.setDescription(information);
-            sections.put(infoType, stringSection);
-        }
-        else{
-            ListSection listSection = (ListSection)sections.get(infoType);
-            if (listSection == null){
-                listSection = new ListSection();
-            }
-            listSection.getList().add(information);
-            sections.put(infoType, listSection);
-        }
-    }
-
-    public void setSection(SectionType sectionType, String name, int startDateMonth, int startDateYear, int endDateMonth, int endDateYear, String description) {
-        OrganizationSection organizationSection = (OrganizationSection)sections.get(sectionType);
-        if (organizationSection == null){
-            organizationSection = new OrganizationSection();
-        }
-
-        YearMonth startDate = YearMonth.of(startDateYear, startDateMonth);
-        YearMonth endDate = YearMonth.of(endDateYear, endDateMonth);
-
-        organizationSection.getList().add(new Position(name, startDate, endDate, description));
-        sections.put(sectionType, organizationSection);
+    public void setSection(SectionType infoType, AbstractSection information) {
+        sections.put(infoType, information);
     }
 
     @Override
@@ -97,7 +60,19 @@ public class Resume implements Comparable<Resume> {
 
     @Override
     public String toString() {
-        return uuid + '(' + fullName + ')';
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append(fullName + "\n");
+        for (Map.Entry<ContactType, String> pair : contactDetails.entrySet()) {
+            stringBuilder.append(pair.getKey().getTitle() + ": " + pair.getValue() + "\n");
+        }
+        stringBuilder.append("\n");
+        for (Map.Entry<SectionType, AbstractSection> pair : sections.entrySet()) {
+            stringBuilder.append(pair.getKey().getTitle() + ":\n" );
+            stringBuilder.append(pair.getValue());
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
     }
 
     @Override
